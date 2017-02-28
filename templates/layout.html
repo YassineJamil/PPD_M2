@@ -30,6 +30,22 @@
                         <a href="{{ url_for('top_k') }}"> Top K </a>
                     </li>
 
+                {% if active == "top_k_MD" %}
+                    <li id="top_k_MD" class="active">
+                {% else %}
+                    <li id="top_k_MD" class="">
+                {% endif %}
+                        <a href="{{ url_for('top_k_MD') }}"> Top K MD</a>
+                    </li>
+
+                {% if active == "top_k_matrix" %}
+                    <li id="top_k_matrix" class="active">
+                {% else %}
+                    <li id="top_k_matrix" class="">
+                {% endif %}
+                        <a href="{{ url_for('top_k_matrix') }}"> Top K Matrix</a>
+                    </li>
+
                 {% if active == "threshold" %}
                     <li id="threshold" class="active">
                 {% else %}
@@ -54,13 +70,22 @@
                         <a href="{{ url_for('index_global') }}"> Creation d'index global </a>
                     </li>
 
-                {% if active == "db_link" %}
+                {% if active == "index_global_MD" %}
                     <li id="index_global_MD" class="active">
                 {% else %}
                     <li id="index_global_MD" class="">
                 {% endif %}
-                        <a href="{{ url_for('index_global_MD') }}"> Creation IG avec Moyenne dispersion </a>
+                        <a href="{{ url_for('index_global_MD') }}"> Creation IG avec moyenne dispersion </a>
                     </li>
+
+                {% if active == "index_global_matrix" %}
+                    <li id="index_global_matrix" class="active">
+                {% else %}
+                    <li id="index_global_matrix" class="">
+                {% endif %}
+                        <a href="{{ url_for('index_global_matrix') }}"> Creation IG avec matrice </a>
+                    </li>
+
                 </ul>
             {% endif %}
 
