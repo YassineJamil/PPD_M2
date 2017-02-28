@@ -22,28 +22,20 @@
                 </ul>
                 <ul class="nav navbar-nav">
 
-                {% if active == "top_k" %}
-                    <li id="top_k" class="active">
+                {% if active == "index_local" %}
+                    <li id="index_local" class="active">
                 {% else %}
-                    <li id="top_k" class="">
+                    <li id="index_local" class="">
                 {% endif %}
-                        <a href="{{ url_for('top_k') }}"> Top K </a>
+                        <a href="{{ url_for('index_local') }}"> Creation IL </a>
                     </li>
 
-                {% if active == "top_k_MD" %}
-                    <li id="top_k_MD" class="active">
+                {% if active == "index_global" %}
+                    <li id="index_global" class="active">
                 {% else %}
-                    <li id="top_k_MD" class="">
+                    <li id="index_global" class="">
                 {% endif %}
-                        <a href="{{ url_for('top_k_MD') }}"> Top K MD</a>
-                    </li>
-
-                {% if active == "top_k_matrix" %}
-                    <li id="top_k_matrix" class="active">
-                {% else %}
-                    <li id="top_k_matrix" class="">
-                {% endif %}
-                        <a href="{{ url_for('top_k_matrix') }}"> Top K Matrix</a>
+                        <a href="{{ url_for('index_global') }}"> Creation IG </a>
                     </li>
 
                 {% if active == "threshold" %}
@@ -54,20 +46,12 @@
                         <a href="{{ url_for('threshold') }}"> Threshold </a>
                     </li>
 
-                {% if active == "index_local" %}
-                    <li id="index_local" class="active">
+                {% if active == "top_k" %}
+                    <li id="top_k" class="active">
                 {% else %}
-                    <li id="index_local" class="">
+                    <li id="top_k" class="">
                 {% endif %}
-                        <a href="{{ url_for('index_local') }}"> Creation d'index local </a>
-                    </li>
-
-                {% if active == "index_global" %}
-                    <li id="index_global" class="active">
-                {% else %}
-                    <li id="index_global" class="">
-                {% endif %}
-                        <a href="{{ url_for('index_global') }}"> Creation d'index global </a>
+                        <a href="{{ url_for('top_k') }}"> Top K </a>
                     </li>
 
                 {% if active == "index_global_MD" %}
@@ -75,7 +59,15 @@
                 {% else %}
                     <li id="index_global_MD" class="">
                 {% endif %}
-                        <a href="{{ url_for('index_global_MD') }}"> Creation IG avec moyenne dispersion </a>
+                        <a href="{{ url_for('index_global_MD') }}"> Creation IGMD</a>
+                    </li>
+
+                {% if active == "top_k_MD" %}
+                    <li id="top_k_MD" class="active">
+                {% else %}
+                    <li id="top_k_MD" class="">
+                {% endif %}
+                        <a href="{{ url_for('top_k_MD') }}"> Top K MD </a>
                     </li>
 
                 {% if active == "index_global_matrix" %}
@@ -83,7 +75,15 @@
                 {% else %}
                     <li id="index_global_matrix" class="">
                 {% endif %}
-                        <a href="{{ url_for('index_global_matrix') }}"> Creation IG avec matrice </a>
+                        <a href="{{ url_for('index_global_matrix') }}"> Creation IG Matrix </a>
+                    </li>
+
+                {% if active == "top_k_matrix" %}
+                    <li id="top_k_matrix" class="active">
+                {% else %}
+                    <li id="top_k_matrix" class="">
+                {% endif %}
+                        <a href="{{ url_for('top_k_matrix') }}"> Top K Matrix</a>
                     </li>
 
                 </ul>

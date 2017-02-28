@@ -157,7 +157,7 @@ fieldset[disabled] .btn-connect.focus {
 #main {
     margin-top: 2em
 }
-
+#index_global_matrix_form,
 #index_global_form,
 #index_global_MD_form,
 #db_connect_form {
