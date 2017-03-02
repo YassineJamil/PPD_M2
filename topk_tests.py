@@ -8,6 +8,7 @@ for j in range(1,nb_sites+1):
         temp_result = 0
         for i in range(0, j):
             formula_response = (mc_GUI_example[j-1][1] - mc_GUI_example[j][1])/(mc_GUI_example[i][2])
+            print '(%f - %f)/%f' % (mc_GUI_example[j-1][1],mc_GUI_example[j][1],mc_GUI_example[i][2])
             temp_result = temp_result + formula_response
             final_result += temp_result
         print final_result

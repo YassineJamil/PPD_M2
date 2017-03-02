@@ -9,6 +9,7 @@ import numpy as numpy
 import sys
 import pprint
 import logging
+import time
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
     render_template, flash
@@ -270,6 +271,7 @@ def index_global():
 def top_k():
     if session.get('connexion'):
         if request.method == 'POST':
+            start_time = time.time()
             conn = connect()
             cur1 = conn.cursor()
             cur2 = conn.cursor()
@@ -398,7 +400,8 @@ def top_k():
                 """
             )
             conn.commit()
-            return render_template("topk_result.html", active="top_k", res=tab_result)
+            execution_time = time.time() - start_time
+            return render_template("topk_result.html", active="top_k", tab_result=tab_result, execution_time=execution_time)
         return render_template("top_k.html", active="top_k")
 
     else:
@@ -408,6 +411,7 @@ def top_k():
 def top_k_MD():
     if session.get('connexion'):
         if request.method == 'POST':
+            start_time = time.time()
             conn = connect()
             cur1 = conn.cursor()
             cur2 = conn.cursor()
@@ -426,20 +430,18 @@ def top_k_MD():
             final_result = 0
             #determine number of sites to loop through to get the k probabilities
             for j in range(1,nb_sites+1):
-                if j != nb_sites:
+                if j < nb_sites and final_result <= int(nbK):
                     temp_result = 0
-                    for i in range(0, j):
+                    for i in range(1, j+1):
                         formula_response = (gui_MD[j-1][1] - gui_MD[j][1])/(gui_MD[i][2])
-                        temp_result = temp_result + formula_response
+                        print '(%f - %f)/%f' % (gui_MD[j-1][1],gui_MD[j][1],gui_MD[i][2])
+                        temp_result += formula_response
                     final_result += temp_result
-                if final_result >= int(nbK):
-                    break
             #thanks to k number, find the probability at kth position of each farm present in the gui_MD
             tab_kieme = []
-            for index, item in enumerate(gui_MD):
-                if index == j - 1:
-                    break
-                adressFull = item[0].rstrip()
+            index = 0
+            while index < j:
+                adressFull = gui_MD[index][0].rstrip()
                 tabAdressFull = adressFull.split("-")
                 ip = tabAdressFull[0]
                 farm = tabAdressFull[1]
@@ -467,6 +469,7 @@ def top_k_MD():
                         SELECT dblink_disconnect('conx');
                         """
                     )
+                index += 1
             tab_kieme.sort(reverse=True)
             delta_k_tab = tab_kieme[0]
             delta_k = delta_k_tab[0][0]
@@ -489,10 +492,9 @@ def top_k_MD():
             )
             listeTuples = cur1.fetchall()
             tab = []
-            for index, tuple in enumerate(listeTuples):
-                if index == j - 1:
-                    break
-                adressFull = tuple[0].rstrip()
+            index = 0
+            while index < j:
+                adressFull = gui_MD[index][0].rstrip()
                 tabAdressFull = adressFull.split("-")
                 ip = tabAdressFull[0]
                 farm = tabAdressFull[1]
@@ -542,6 +544,7 @@ def top_k_MD():
                         SELECT dblink_disconnect('conx')
                         """
                     )
+                index += 1
             tab.sort(reverse=True)
             tab_result = []
             for t in range(0, int(nbK)):
@@ -554,7 +557,8 @@ def top_k_MD():
                 """
             )
             conn.commit()
-            return render_template("topkMD_result.html", active="top_k_MD", res=tab_result)
+            execution_time = time.time() - start_time
+            return render_template("topkMD_result.html", active="top_k_MD", tab_result=tab_result, execution_time=execution_time)
         return render_template("top_k_MD.html", active="top_k_MD")
 
     else:
@@ -564,6 +568,7 @@ def top_k_MD():
 def top_k_matrix():
     if session.get('connexion'):
         if request.method == 'POST':
+            start_time = time.time()
             conn = connect()
             cur1 = conn.cursor()
             cur2 = conn.cursor()
@@ -582,7 +587,7 @@ def top_k_matrix():
             for index,sub in enumerate(cleaned_GUI_matrix):
                 size = len(cleaned_GUI_matrix[0])-1
                 if index > 0:
-                    while len(sub) <= size:
+                    while len(sub) <= size+1:
                         sub.insert(0,'0')
             GUI_matrix = numpy.transpose(cleaned_GUI_matrix)
             counter = 0
@@ -594,6 +599,9 @@ def top_k_matrix():
                 else:
                     done == True
                     break
+            all = False
+            if index == len(GUI_matrix)-1:
+               all = True
             cur1.execute(
                 """
                 SELECT adress FROM index_global_matrix;
@@ -601,7 +609,7 @@ def top_k_matrix():
             )
             liste = cur1.fetchall()
             for i, l in enumerate(liste):
-                if i == index :
+                if i == index and not all:
                     break
                 adressFull = l[0].rstrip()
                 tabAdressFull = adressFull.split("-")
@@ -654,7 +662,7 @@ def top_k_matrix():
             listeTuples = cur1.fetchall()
             tab = []
             for i,tuple in enumerate(listeTuples):
-                if i == index :
+                if i == index and not all:
                     break
                 adressFull = tuple[0].rstrip()
                 tabAdressFull = adressFull.split("-")
@@ -718,7 +726,8 @@ def top_k_matrix():
                 """
             )
             conn.commit()
-            return render_template("topk_matrix_result.html", active="top_k_matrix", res=tab_result)
+            execution_time = time.time() - start_time
+            return render_template("topk_matrix_result.html", active="top_k_matrix", tab_result=tab_result, execution_time=execution_time)
         return render_template("top_k_matrix.html", active="top_k_matrix")
 
     else:
@@ -1067,7 +1076,7 @@ def index_global_matrix():
             # for each site in GUI, we search all probabilities between each max_proba of each site (cf matrix algo)
             for index, site in enumerate(GUI_content):
                 """verify the algorithm : maybe there is an error"""
-                if index <= nb_sites-1:
+                if index < nb_sites-1:
                     for i in range(index+1, nb_sites):
                         max_proba = str(GUI_content[i-1][1])
                         min_proba = str(GUI_content[i][1])
@@ -1110,16 +1119,18 @@ def index_global_matrix():
                         else:
                             string_matrix += '%i' % number
                     site = site + (string_matrix,)
-                    print "%s, %s, %s" % (site[0].strip(), str(site[1]), string_matrix)
-                    #insertion in the definite table
-                    cur4.execute(
-                        """
-                        INSERT INTO index_global_matrix(adress, proba, matrix)
-                        VALUES ('"""+ site[0].strip() +"""', '"""+ str(site[1]) +"""', '"""+ string_matrix +"""');
-                        DROP TABLE IF EXISTS index_global_matrix_temp;
-                        """
-                    )
-                    matrix = []
+                else:
+                     string_matrix = '0'
+                print "%s, %s, %s" % (site[0].strip(), str(site[1]), string_matrix)
+                #insertion in the definite table
+                cur4.execute(
+                    """
+                    INSERT INTO index_global_matrix(adress, proba, matrix)
+                    VALUES ('"""+ site[0].strip() +"""', '"""+ str(site[1]) +"""', '"""+ string_matrix +"""');
+                    DROP TABLE IF EXISTS index_global_matrix_temp;
+                    """
+                )
+                matrix = []
             if (doOrNo == '1'):
                 for ip in tab_ip:
                     if ip:

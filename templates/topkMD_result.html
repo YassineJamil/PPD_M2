@@ -1,6 +1,7 @@
 {% extends "container.html" %}
 {% block body %}
-     {% for t in res %}
+     temps d'execution : {{ execution_time }} secondes <br><br>
+     {% for t in tab_result %}
         {{ t }} <br>
     {% endfor %}
 {% endblock %}
