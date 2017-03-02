@@ -171,7 +171,7 @@ def index_global():
             cur4 = conn.cursor()
             cur1.execute(
                 "DROP TABLE IF EXISTS index_global;"
-                "CREATE TABLE index_global(adress CHAR(30), proba NUMERIC(10,8));"
+                "CREATE TABLE index_global(adress CHAR(100), proba NUMERIC(10,8));"
             )
             tab_ip = []
             sick = request.form['maladie']
@@ -840,7 +840,7 @@ def index_global_MD():
             cur4 = conn.cursor()
             cur1.execute(
                 "DROP TABLE IF EXISTS index_global;"
-                "CREATE TABLE index_global(adress CHAR(30), proba NUMERIC(10,8));"
+                "CREATE TABLE index_global(adress CHAR(100), proba NUMERIC(10,8));"
                 "DROP TABLE IF EXISTS index_global_MD;"
                 "CREATE TABLE index_global_md(adress CHAR(100), proba NUMERIC(10,8), md NUMERIC (10,8));"
             )
@@ -997,7 +997,7 @@ def index_global_matrix():
             cur4 = conn.cursor()
             cur1.execute(
                 "DROP TABLE IF EXISTS index_global_matrix;"
-                "CREATE TABLE index_global_matrix_temp(adress CHAR(30), proba NUMERIC(10,8));"
+                "CREATE TABLE index_global_matrix_temp(adress CHAR(100), proba NUMERIC(10,8));"
                )
             tab_ip = []
             sick = request.form['maladie']
@@ -1066,7 +1066,7 @@ def index_global_matrix():
             )
             cur4.execute(
                 """
-                CREATE TABLE index_global_matrix(adress CHAR(30), proba NUMERIC(10,8), matrix CHAR(30));
+                CREATE TABLE index_global_matrix(adress CHAR(100), proba NUMERIC(10,8), matrix CHAR(100));
                 SELECT * FROM index_global_matrix_temp;
                 """
             )
@@ -1121,7 +1121,7 @@ def index_global_matrix():
                     site = site + (string_matrix,)
                 else:
                      string_matrix = '0'
-                print "%s, %s, %s" % (site[0].strip(), str(site[1]), string_matrix)
+                #print "%s, %s, %s" % (site[0].strip(), str(site[1]), string_matrix)
                 #insertion in the definite table
                 cur4.execute(
                     """
