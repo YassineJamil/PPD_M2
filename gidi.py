@@ -241,7 +241,7 @@ def index_global():
             if (doOrNo == '1'):
 
                 for ip in tab_ip:
-                    print ip
+                   # print ip
                     if ip:
                         # dblinK
                         cur4.execute(
@@ -434,7 +434,7 @@ def top_k_MD():
                     temp_result = 0
                     for i in range(1, j+1):
                         formula_response = (gui_MD[j-1][1] - gui_MD[j][1])/(gui_MD[i][2])
-                        print '(%f - %f)/%f' % (gui_MD[j-1][1],gui_MD[j][1],gui_MD[i][2])
+                        #print '(%f - %f)/%f' % (gui_MD[j-1][1],gui_MD[j][1],gui_MD[i][2])
                         temp_result += formula_response
                     final_result += temp_result
             #thanks to k number, find the probability at kth position of each farm present in the gui_MD
@@ -906,7 +906,7 @@ def index_global_MD():
             #en local ou distribué ? Si doOrNo = 1 oui sinon on passe au else
             if (doOrNo == '1'):
                 for ip in tab_ip:
-                    print ip
+                    #print ip
                     if ip:
                         # dblinK
                         cur4.execute(
@@ -958,9 +958,9 @@ def index_global_MD():
                             proba_max = float(t[0])
                             continue
                         current_proba = float(t[0])
-                        print '(1/(%i))*((%f-%f)/(%i-1))' % (len(test)-1, proba_max, current_proba, j)
+                        #print '(1/(%i))*((%f-%f)/(%i-1))' % (len(test)-1, proba_max, current_proba, j)
                         dispersion_measure = (1.0/(len(test)-1))*((proba_max - current_proba)/float((j-1)))
-                        print dispersion_measure
+                        #print dispersion_measure
                     # for t in test:
                         # if (i < end):
                         #     cur2.execute(
