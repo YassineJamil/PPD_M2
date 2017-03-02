@@ -86,6 +86,13 @@
                         <a href="{{ url_for('top_k_matrix') }}"> Top K Matrix</a>
                     </li>
 
+                {% if active == "graph" %}
+                    <li id="graph" class="active">
+                {% else %}
+                    <li id="graph" class="">
+                {% endif %}
+                        <a href="{{ url_for('graph') }}"> Graphe</a>
+                    </li>
                 </ul>
             {% endif %}
 

@@ -1,0 +1,9 @@
+{% extends "container.html" %}
+{% block body %}
+    <div class="container" id="graph_form">
+        <form class="form-signin center" action="{{ url_for('graph') }}" method=post>
+            <h2 class="form-signin-heading">Graphique comparatif des temps d'execution</h2>
+            <button class="btn btn-lg btn-connect btn-block" type="submit">Creer Graphique</button>
+        </form>
+    </div>
+{% endblock %}

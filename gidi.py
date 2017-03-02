@@ -10,6 +10,7 @@ import sys
 import pprint
 import logging
 import time
+from pylab import *
 
 from flask import Flask, request, session, g, redirect, url_for, abort, \
     render_template, flash
@@ -20,6 +21,10 @@ app.config.from_object(__name__)
 
 #File with disease's name
 fmaladie_name = "maladies_bovines.txt"
+
+tab_graph_top_k = []
+tab_graph_top_k_md = []
+tab_graph_top_k_matrix = []
 
 def connect():
     return psycopg2.connect("dbname='"+ session['db_name'] +
@@ -97,6 +102,8 @@ def db_action():
     if session.get('connexion'):
         if request.method == 'POST':
             with Switch(request.form['action']) as case:
+                if case("graph"):
+                    return redirect(url_for("graph"))
                 if case("top_K"):
                     return redirect(url_for("top_k"))
                 if case("top_K_MD"):
@@ -280,6 +287,7 @@ def top_k():
             nbKOfsset = int(nbK) - 1
             tab_kieme = []
             tab = []
+            tab2 = []
             cur1.execute(
                 """
                 SELECT adress FROM index_global;
@@ -401,6 +409,8 @@ def top_k():
             )
             conn.commit()
             execution_time = time.time() - start_time
+            tab_graph_top_k.append([int(nbK), execution_time])
+            #print tab_graph_top_k
             return render_template("topk_result.html", active="top_k", tab_result=tab_result, execution_time=execution_time)
         return render_template("top_k.html", active="top_k")
 
@@ -558,6 +568,8 @@ def top_k_MD():
             )
             conn.commit()
             execution_time = time.time() - start_time
+            tab_graph_top_k_md.append([int(nbK), execution_time])
+            #print tab_graph_top_k_md
             return render_template("topkMD_result.html", active="top_k_MD", tab_result=tab_result, execution_time=execution_time)
         return render_template("top_k_MD.html", active="top_k_MD")
 
@@ -727,6 +739,8 @@ def top_k_matrix():
             )
             conn.commit()
             execution_time = time.time() - start_time
+            tab_graph_top_k_matrix.append([int(nbK), execution_time])
+            #print tab_graph_top_k_matrix
             return render_template("topk_matrix_result.html", active="top_k_matrix", tab_result=tab_result, execution_time=execution_time)
         return render_template("top_k_matrix.html", active="top_k_matrix")
 
@@ -997,6 +1011,7 @@ def index_global_matrix():
             cur4 = conn.cursor()
             cur1.execute(
                 "DROP TABLE IF EXISTS index_global_matrix;"
+                "DROP TABLE IF EXISTS index_global_matrix_temp;"
                 "CREATE TABLE index_global_matrix_temp(adress CHAR(100), proba NUMERIC(10,8));"
                )
             tab_ip = []
@@ -1155,6 +1170,44 @@ def index_global_matrix():
             conn.commit()
             return render_template('index_global_matrix_confirm.html', active="index_global_matrix")
         return render_template('index_global_matrix.html', active="index_global_matrix")
+    else:
+        return redirect(url_for('error'))
+
+@app.route('/graph', methods=['GET', 'POST'])
+def graph():
+    if session.get('connexion'):
+        if request.method == 'POST':
+            x = []
+            z = []
+            x2 = []
+            z2 = []
+            x3 = []
+            z3 = []
+            for [index, site] in tab_graph_top_k:
+                x.append(index)
+                z.append(site)
+            print x, z
+            for [index2, site2] in tab_graph_top_k_md:
+                x2.append(index2)
+                z2.append(site2)
+            print x2, z2
+            for [index3, site3] in tab_graph_top_k_matrix:
+                x3.append(index3)
+                z3.append(site3)
+            print x3, z3
+            xlabel("le K recherche")
+            ylabel("temps d'execution")
+            title("comparaison temps d'execution")
+            plot(x, z, "b-o", label="top_k" + ' V1')
+            plot(x2, z2, "y-o", label="top_k_md" + ' V2')
+            plot(x3, z3, "g-o", label="top_k_matrix" + ' V2')
+            legend()
+            grid()
+            show()
+            close()
+
+            return render_template('graph_confirm.html', active="graph")
+        return render_template('graph.html', active="graph")
     else:
         return redirect(url_for('error'))
 
